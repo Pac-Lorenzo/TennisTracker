@@ -43,8 +43,32 @@ export default function RegisterScreen() {
 
             {error && <Text style={{ color: 'red' }}>{error}</Text>}
             
-            <Button title={loading ? "Registering..." : "Register"} onPress={() => register(email, password)}/>
+            <Button title={loading ? "Registering..." : "Register"} onPress={handleRegister}/>
             <Button title="Back to Login" onPress={() => navigation.goBack()} />
         </View>
      );
 }
+
+//OLD REGISTERSCREEN
+{/* <Text>Email</Text>
+            <TextInput
+                placeholder="Enter your email"
+                autoCapitalize="none"
+                keyboardType="email-address"
+                style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                onChangeText={setEmail}
+                value={email}
+            />
+            <Text>Password</Text>
+            <TextInput
+                placeholder="Enter your password"
+                secureTextEntry
+                style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+                onChangeText={setPassword}
+                value={password}
+            />
+
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
+            
+            <Button title={loading ? "Registering..." : "Register"} onPress={() => register(email, password)}/>
+            <Button title="Back to Login" onPress={() => navigation.goBack()} /> */}

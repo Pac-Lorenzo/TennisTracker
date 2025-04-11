@@ -37,7 +37,36 @@ export default function LoginScreen() {
 
   return (
     <View style={{ padding: 20 }}>
-      <Text>Email</Text>
+      <Text>Login</Text>
+      <TextInput
+        placeholder="Enter your email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+        onChangeText={setEmail}
+        value={email}
+        />
+      <TextInput 
+        placeholder="Enter your password"
+        secureTextEntry
+        style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
+        onChangeText={setPassword}
+        value={password}
+        />
+      {error && <Text style={{ color:'red' }}>{error}</Text>}
+      <Button title={loading ? "Logging in..." : "Login"} onPress={handleLogin}/>
+      <Button title="Go to Register" onPress={() => navigation.navigate('Register')} />
+
+        
+    </View>
+  );
+}
+
+
+
+
+//OLD LOGIN SCREEN CODE
+{/* <Text>Email</Text>
       <TextInput
         placeholder="Enter your email"
         autoCapitalize="none"
@@ -58,7 +87,4 @@ export default function LoginScreen() {
       {error && <Text style={{ color:'red' }}>{error}</Text>}
 
       <Button title={loading ? "Logging in..." : "Login"} onPress={() => login(email, password)}/>
-      <Button title="Go to Register" onPress={() => navigation.navigate('Register')} />
-    </View>
-  );
-}
+      <Button title="Go to Register" onPress={() => navigation.navigate('Register')} /> */}
