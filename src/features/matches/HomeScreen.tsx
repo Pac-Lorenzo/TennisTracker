@@ -35,6 +35,11 @@ export default function HomeScreen() {
         View Match History
       </Button>
 
+      <Button mode="outlined" onPress={() => navigation.navigate('PlayerProfile')} style={{ marginBottom: 12 }}>
+        Manage Player Profiles
+      </Button>
+
+
       <Button mode="text" onPress={handleLogout}>
         Logout
       </Button>
