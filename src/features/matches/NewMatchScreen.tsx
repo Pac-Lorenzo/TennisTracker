@@ -20,14 +20,39 @@ export default function NewMatchScreen() {
   const [menuMatchTypeVisible, setMenuMatchTypeVisible] = useState(false);
 
   // Placeholder — later this will submit to Firestore
-  const handleSaveMatch = () => {
-    console.log({
-      opponent,
-      surface,
-      matchType,
-      score,
-      notes,
-    });
+  const handleSaveMatch = async () => {
+    // Basic validation
+    if (!opponent || !surface || !matchType || !score) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+  
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error('User not authenticated');
+  
+      await addDoc(collection(db, 'matches'), {
+        userId: user.uid,
+        opponent,
+        surface,
+        matchType,
+        score,
+        notes,
+        date: new Date().toISOString(), // for now
+        createdAt: serverTimestamp(), // Firestore timestamp
+      });
+  
+      alert('Match saved successfully!');
+      // Optional: reset form
+      setOpponent('');
+      setSurface('');
+      setMatchType('');
+      setScore('');
+      setNotes('');
+    } catch (error) {
+      console.error('Error saving match:', error);
+      alert('Error saving match. Please try again.');
+    }
   };
 
   return (
