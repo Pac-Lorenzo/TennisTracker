@@ -3,7 +3,8 @@ import { useState, useEffect} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../services/database/firebaseConfig';
-import { View, Text, TextInput, Alert, Button } from 'react-native';
+import { View, KeyboardAvoidingView, Platform } from 'react-native';
+import { TextInput, Button, Text, useTheme, Title } from 'react-native-paper';
 import { useAuth } from '../../hooks/useAuths';
 import { useUserStore } from '../../store/useUserStore';
 
@@ -13,7 +14,7 @@ export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { login, loading, error} = useAuth();
-
+    const theme = useTheme();
     const { setUser } = useUserStore();
 
     useEffect(() => {
@@ -36,7 +37,50 @@ export default function LoginScreen() {
 
 
   return (
-    <View style={{ padding: 20 }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={{ flex: 1, justifyContent: 'center', padding: 20, backgroundColor: theme.colors.background, }}
+    >
+      <View style={{ flex:1 }}>
+        <Title style={{ textAlign: 'center', marginBottom: 16 }}>Login</Title>
+
+        <TextInput
+          label="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          style={{ marginBottom: 12 }}
+        />
+
+        <TextInput
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          style={{ marginBottom: 12 }}
+        />
+
+        <Button mode="contained" loading={loading} onPress={handleLogin}>
+          Login
+        </Button>
+
+        {error && (
+          <Text style={{ color: 'red', textAlign: 'center', marginTop: 8 }}>{error}</Text>
+        )}
+
+        <Button mode="text" onPress={() => navigation.navigate('Register')}>
+          Don’t have an account? Register
+        </Button>
+      </View>
+    </KeyboardAvoidingView>
+  );
+}
+
+
+
+//OLD LOGIN SCREEN CODE
+{/* <View style={{ padding: 20 }}>
       <Text>Login</Text>
       <TextInput
         placeholder="Enter your email"
@@ -58,12 +102,7 @@ export default function LoginScreen() {
       <Button title="Go to Register" onPress={() => navigation.navigate('Register')} />
 
         
-    </View>
-  );
-}
-
-
-
+    </View> */}
 
 //OLD LOGIN SCREEN CODE
 {/* <Text>Email</Text>

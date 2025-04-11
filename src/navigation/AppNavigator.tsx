@@ -21,6 +21,9 @@ export default function AppNavigator() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        {/* <Stack.Screen name="NewMatch" component={() => <Text>New Match (Coming Soon)</Text>} />
+        <Stack.Screen name="MatchHistory" component={() => <Text>Match History (Coming Soon)</Text>} /> */}
+
       </Stack.Navigator>
     </NavigationContainer>
   );
