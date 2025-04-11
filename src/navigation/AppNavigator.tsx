@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../features/auth/LoginScreen';
 import RegisterScreen from '../features/auth/RegisterScreen';
 import HomeScreen from '../features/matches/HomeScreen';
+import NewMatchScreen from '../features/matches/NewMatchScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -21,8 +22,8 @@ export default function AppNavigator() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
-        {/* <Stack.Screen name="NewMatch" component={() => <Text>New Match (Coming Soon)</Text>} />
-        <Stack.Screen name="MatchHistory" component={() => <Text>Match History (Coming Soon)</Text>} /> */}
+        <Stack.Screen name="NewMatch" component={NewMatchScreen} />
+        {/* <Stack.Screen name="MatchHistory" component={() => <Text>Match History (Coming Soon)</Text>} /> */}
 
       </Stack.Navigator>
     </NavigationContainer>
