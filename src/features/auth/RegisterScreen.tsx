@@ -19,7 +19,7 @@ export default function RegisterScreen() {
         const user = auth.currentUser;
         if (user) {
             setUser(user); // Store user globally
-            navigation.replace('Home');
+            navigation.replace('ProfileSetUpScreen'); // Redirect to profile setup
         }
     }
     return (

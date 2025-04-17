@@ -5,6 +5,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../services/database/firebaseConfig';
 import { View, KeyboardAvoidingView, Platform } from 'react-native';
 import { TextInput, Button, Text, useTheme, Title } from 'react-native-paper';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../services/database/firebaseConfig';
 import { useAuth } from '../../hooks/useAuths';
 import { useUserStore } from '../../store/useUserStore';
 
@@ -18,9 +20,20 @@ export default function LoginScreen() {
     const { setUser } = useUserStore();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(user){
-                navigation.replace('Home');
+                // Check if user has a profile
+                const profileRef = doc(db, 'players', user.uid);
+                const profileDoc = await getDoc(profileRef);
+                
+                if (profileDoc.exists()) {
+                    const profile = profileDoc.data();
+                    useUserStore.getState().setUser({ ...user, ...profile });
+                    navigation.replace('Home');
+                } else {
+                    useUserStore.getState().setUser(user);
+                    navigation.replace('ProfileSetUpScreen');
+                }
             }
         });
         return unsubscribe;
@@ -30,8 +43,16 @@ export default function LoginScreen() {
         await login(email, password);
         const user = auth.currentUser;
         if (user) {
-            setUser(user); // Store user globally
+          const ref = doc(db, 'players', user.uid);
+          const profileDoc = await getDoc(ref);
+          if (profileDoc.exists()) {
+            const profile = profileDoc.data();
+            useUserStore.getState().setUser({ ...user, ...profile });
             navigation.replace('Home');
+          } else {
+            useUserStore.getState().setUser(user);
+            navigation.replace('ProfileSetUpScreen');
+          }
         }
     }
 
@@ -70,7 +91,7 @@ export default function LoginScreen() {
         )}
 
         <Button mode="text" onPress={() => navigation.navigate('Register')}>
-          Don’t have an account? Register
+          Don't have an account? Register
         </Button>
       </View>
     </KeyboardAvoidingView>

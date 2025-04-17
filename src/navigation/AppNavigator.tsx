@@ -8,7 +8,7 @@ import HomeScreen from '../features/matches/HomeScreen';
 import NewMatchScreen from '../features/matches/NewMatchScreen';
 import MatchHistoryScreen from '../features/matches/MatchHistoryScreen';
 import PlayerProfileScreen from '../features/players/PlayerProfileScreen';
-
+import ProfileSetUpScreen from '../features/players/ProfileSetUpScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -17,6 +17,7 @@ export type RootStackParamList = {
   NewMatch: undefined;
   MatchHistory: undefined;
   PlayerProfile: undefined;
+  ProfileSetUpScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -31,6 +32,7 @@ export default function AppNavigator() {
         <Stack.Screen name="NewMatch" component={NewMatchScreen} />
         <Stack.Screen name="MatchHistory" component={MatchHistoryScreen} />
         <Stack.Screen name="PlayerProfile" component={PlayerProfileScreen} />
+        <Stack.Screen name="ProfileSetUpScreen" component={ProfileSetUpScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
