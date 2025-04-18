@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, KeyboardAvoidingView, Platform, ScrollView, Pressable } from 'react-native';
 import { TextInput, Button, Text, Title, useTheme, Menu, ActivityIndicator } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from '../../services/database/firebaseConfig';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { usePlayerProfile } from '../../hooks/usePlayerProfile';
 import { useUserStore } from '../../store/useUserStore';
+import * as ImagePicker from 'expo-image-picker';
+import { Image } from 'react-native';
 
 const nationalities = [
   { label: '🇺🇸 USA', value: 'USA' },
@@ -15,10 +17,19 @@ const nationalities = [
   { label: '🇯🇵 Japan', value: 'Japan' },
 ];
 
+const avatarOptions = [
+  require('../../assets/avatars/racket.png'),
+  require('../../assets/avatars/tplayer.png'),
+  require('../../assets/avatars/tennis-court-icon.png'),
+];
+
 export default function PlayerSetUpScreen() {
   const theme = useTheme();
   const navigation = useNavigation<any>();
   const { profile, loading } = usePlayerProfile();
+
+  const [image, setImage] = useState<string | null>(null);
+
 
   const [name, setName] = useState('');
   const [ranking, setRanking] = useState('');
@@ -30,12 +41,38 @@ export default function PlayerSetUpScreen() {
   useEffect(() => {
     // If profile already exists, prefill fields
     if (profile) {
+      if (profile.avatar) {
+        setImage(profile.avatar);
+      }
       setName(profile.name || '');
       setRanking(profile.ranking || '');
       setNationality(profile.nationality || '');
       setNotes(profile.notes || '');
     }
-  }, [profile]);
+  }, [profile])
+  ;
+
+
+  const pickImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert('Permission to access media library is required!');
+      return;
+    }
+  
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+      base64: true,
+    });
+  
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+  
 
   const handleSaveProfile = async () => {
     const user = auth.currentUser;
@@ -52,7 +89,15 @@ export default function PlayerSetUpScreen() {
         notes,
         updatedAt: new Date().toISOString(),
       };
-      await setDoc(ref, profile);
+      await setDoc(doc(db, 'players', user.uid), {
+        userId: user.uid,
+        name,
+        ranking,
+        nationality,
+        notes,
+        avatar: image || null,
+        updatedAt: new Date().toISOString(),
+      });
 
       // Update Zustand store with the profile data
       useUserStore.getState().setUser({ ...user, ...profile });
@@ -77,6 +122,40 @@ export default function PlayerSetUpScreen() {
         <Title style={{ textAlign: 'center', marginBottom: 24 }}>
           {profile ? 'Edit Your Profile' : 'Set Up Your Player Profile'}
         </Title>
+
+        <Button
+          mode="outlined"
+          icon="camera"
+          onPress={pickImage}
+          style={{ marginBottom: 12 }}
+        >
+        {image ? 'Change Photo' : 'Pick Profile Picture'}
+        </Button>
+
+        {image && (
+          <Image
+            source={{ uri: image }}
+            style={{ width: 100, height: 100, borderRadius: 50, alignSelf: 'center', marginBottom: 16 }}
+          />
+        )}
+
+        <Text style={{ marginBottom: 8 }}>Or choose a preset avatar:</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 16 }}>
+            {avatarOptions.map((avatar, index) => (
+              <Pressable key={index} onPress={() => setImage(Image.resolveAssetSource(avatar).uri)}>
+                <Image
+                  source={avatar}
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 30,
+                    borderWidth: image === Image.resolveAssetSource(avatar).uri ? 2 : 0,
+                    borderColor: theme.colors.primary,
+                  }}
+                />
+              </Pressable>
+            ))}
+          </View>
 
         <TextInput
           label="Name"

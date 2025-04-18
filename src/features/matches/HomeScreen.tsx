@@ -6,6 +6,8 @@ import { useUserStore } from '../../store/useUserStore';
 import { auth } from '../../services/database/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../services/database/firebaseConfig';
+import { Image } from 'react-native';
+
 
 export default function HomeScreen() {
   const theme = useTheme();
@@ -48,6 +50,13 @@ export default function HomeScreen() {
       <Title style={{ textAlign: 'center', marginBottom: 20 }}>
         Welcome{user?.name ? `, ${user.name}` : ''}!
       </Title>
+      {user?.avatar && (
+        <Image
+          source={{ uri: user.avatar }}
+          style={{ width: 100, height: 100, borderRadius: 50, alignSelf: 'center', marginBottom: 16 }}
+        />
+      )}
+
 
       <Button mode="contained" onPress={() => navigation.navigate('NewMatch')} style={{ marginBottom: 12 }}>
         Start New Match
